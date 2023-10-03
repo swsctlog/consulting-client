@@ -13,21 +13,21 @@
         <input type="text" class="form-control" id="name" required>
       </div>
       <div class="form-group">
-        <label for="contact">Телеграмм/Инстаграмм/Телефон Клиента:</label>
+        <label for="contact">Контактная информация:</label>
         <input type="text" class="form-control" id="contact" required>
       </div>
       <div class="form-group">
         <label for="service">Выберите услугу:</label>
         <select class="form-control" id="service" required>
-          <option value="Услуга 1">Монтаж видео</option>
-          <option value="Услуга 2">Дизайн превью</option>
-          <option value="Услуга 3">Разработка сайта</option>
-          <option value="Услуга 4">Робототехника на Arduino</option>
-          <option value="Услуга 3">C# или C++</option>
+          <option value="Монтаж видео">Монтаж видео</option>
+          <option value="Дизайн превью">Дизайн превью</option>
+          <option value="Разработка сайта">Разработка сайта</option>
+          <option value="Разработка на Ардуино">Разработка на Arduino</option>
+          <option value="C++ или C#">Разработка ПО на C++ или C#</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="price">Договоренная цена:</label>
+        <label for="price">Цена, готовая к оплате:</label>
         <input type="text" class="form-control" id="price" required>
       </div>
       <button type="submit" class="btn btn-primary">Зарегистрировать клиента</button>
@@ -40,6 +40,7 @@
           <th>Контактная информация</th>
           <th>Услуга</th>
           <th>Цена</th>
+          <th>Действия</th>
         </tr>
       </thead>
       <tbody>
@@ -61,17 +62,33 @@
       localStorage.setItem('clients', JSON.stringify(clients));
     }
 
+    // Функция для удаления данных клиента из localStorage
+    function deleteClientData(index) {
+      var clients = JSON.parse(localStorage.getItem('clients')) || [];
+      clients.splice(index, 1);
+      localStorage.setItem('clients', JSON.stringify(clients));
+    }
+
     // Функция для загрузки данных клиентов из localStorage и отображения их в таблице
     function loadClientsData() {
       var clients = JSON.parse(localStorage.getItem('clients')) || [];
       var clientsTable = document.getElementById('clientsTable').getElementsByTagName('tbody')[0];
       clientsTable.innerHTML = '';
 
-      clients.forEach(function(client) {
+      clients.forEach(function(client, index) {
         var row = document.createElement('tr');
-        row.innerHTML = '<td>' + client.name + '</td><td>' + client.contact + '</td><td>' + client.service + '</td><td>' + client.price + '</td>';
+        row.innerHTML = '<td>' + client.name + '</td><td>' + client.contact + '</td><td>' + client.service + '</td><td>' + client.price + '</td><td><button class="btn btn-danger btn-sm deleteBtn" data-index="' + index + '">Удалить</button></td>';
         clientsTable.appendChild(row);
       });
+
+      var deleteButtons = document.getElementsByClassName('deleteBtn');
+      for (var i = 0; i < deleteButtons.length; i++) {
+        deleteButtons[i].addEventListener('click', function() {
+          var index = this.getAttribute('data-index');
+          deleteClientData(index);
+          loadClientsData();
+        });
+      }
     }
 
     document.getElementById('clientForm').addEventListener('submit', function(e) {
@@ -95,4 +112,3 @@
     loadClientsData();
   </script>
 </body>
-</html>

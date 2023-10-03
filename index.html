@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Консультация клиентов</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Консультация клиентов</h1>
+    <form id="clientForm" class="mt-4">
+      <div class="form-group">
+        <label for="name">Имя клиента:</label>
+        <input type="text" class="form-control" id="name" required>
+      </div>
+      <div class="form-group">
+        <label for="contact">Телеграмм/Инстаграмм/Телефон Клиента:</label>
+        <input type="text" class="form-control" id="contact" required>
+      </div>
+      <div class="form-group">
+        <label for="service">Выберите услугу:</label>
+        <select class="form-control" id="service" required>
+          <option value="Услуга 1">Монтаж видео</option>
+          <option value="Услуга 2">Дизайн превью</option>
+          <option value="Услуга 3">Разработка сайта</option>
+          <option value="Услуга 4">Робототехника на Arduino</option>
+          <option value="Услуга 3">C# или C++</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="price">Договоренная цена:</label>
+        <input type="text" class="form-control" id="price" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Зарегистрировать клиента</button>
+    </form>
+
+    <table id="clientsTable" class="table mt-4">
+      <thead>
+        <tr>
+          <th>Имя клиента</th>
+          <th>Контактная информация</th>
+          <th>Услуга</th>
+          <th>Цена</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Функция для сохранения данных клиента в localStorage
+    function saveClientData(name, contact, service, price) {
+      var clients = JSON.parse(localStorage.getItem('clients')) || [];
+      var client = {
+        name: name,
+        contact: contact,
+        service: service,
+        price: price
+      };
+      clients.push(client);
+      localStorage.setItem('clients', JSON.stringify(clients));
+    }
+
+    // Функция для загрузки данных клиентов из localStorage и отображения их в таблице
+    function loadClientsData() {
+      var clients = JSON.parse(localStorage.getItem('clients')) || [];
+      var clientsTable = document.getElementById('clientsTable').getElementsByTagName('tbody')[0];
+      clientsTable.innerHTML = '';
+
+      clients.forEach(function(client) {
+        var row = document.createElement('tr');
+        row.innerHTML = '<td>' + client.name + '</td><td>' + client.contact + '</td><td>' + client.service + '</td><td>' + client.price + '</td>';
+        clientsTable.appendChild(row);
+      });
+    }
+
+    document.getElementById('clientForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var name = document.getElementById('name').value;
+      var contact = document.getElementById('contact').value;
+      var service = document.getElementById('service').value;
+      var price = document.getElementById('price').value;
+
+      saveClientData(name, contact, service, price);
+      loadClientsData();
+
+      document.getElementById('name').value = '';
+      document.getElementById('contact').value = '';
+      document.getElementById('service').value = '';
+      document.getElementById('price').value = '';
+    });
+
+    // Загрузка данных клиентов при загрузке страницы
+    loadClientsData();
+  </script>
+</body>
+</html>
